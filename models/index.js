@@ -44,9 +44,15 @@ pageSchema.virtual('renderedContent').get(function () {
 });
 
 pageSchema.pre('validate', function (next) {
+
+   console.log("I AM HERE")
     if (this.title) {
+       console.log("I FOUND A TITLE")
+
         this.urlTitle = this.title.replace(/\s/g, '_').replace(/\W/g, '');
     } else {
+       console.log("I DIDNT FOUND A TITLE")
+
         this.urlTitle = Math.random().toString(36).substring(2, 7);
     }
     next();
@@ -69,7 +75,7 @@ pageSchema.methods.findSimilar = function () {
             $in: this.tags
         },
         _id: {
-            $ne: this._id
+               $ne: this._id
         }
     }).exec();
 
