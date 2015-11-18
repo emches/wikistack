@@ -148,8 +148,8 @@ describe('User model', function() {
       email: 'Test Email',
      });
 
-    newUser.save();
-    done();
+    newUser.save(done);
+
   });
 
   afterEach(function(done) {
@@ -182,21 +182,16 @@ describe('User model', function() {
 
     //can't create user with non unique email
       it('does not create a dup email', function(done) {
-       var createBad  = function(){
         newUser2 = new User({
-        name: 'Test Name',
-        email: 'Test Email',
+          name: 'Test Name',
+          email: 'Test Email',
         });
-         newUser2.save(function(err){
-          if (err) {
-            console.log("ERROR");
-            throw new Error('I FAILED') }
-          });
-          done();
-       }
 
-       expect(createBad).to.throw('I FAILED');
-       done();
+        newUser2.save(function(err){
+           expect(err).to.be.an('object')
+            done();
+          });
+
        });
-  })
+    });
 });
