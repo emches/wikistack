@@ -127,7 +127,7 @@ describe('Page model', function() {
   });
 
   describe('route virtual', function(){
-     it('creates a route correctly', function(done) {
+     xit('creates a route correctly', function(done) {
         Page.find({content: 'Test content'}).exec( function(err, pages){
           expect(pages[0].route).to.equal('/wiki/' + pages[0].urlTitle);
           done();
@@ -139,19 +139,64 @@ describe('Page model', function() {
 
 
 describe('User model', function() {
+
+  var newUser;
+
+  beforeEach(function(done) {
+     newUser = new User({
+      name: 'Test Name',
+      email: 'Test Email',
+     });
+
+    newUser.save();
+    done();
+  });
+
+  afterEach(function(done) {
+    User.remove({name: 'Test Name'}, done);
+  });
+
   describe('findOrCreate method', function() {
-
-    //can successfully create new user
-
+      //can successfully create new user
+      xit('creates a non existing user', function(done) {
+        User.findOrCreate({ name: 'Test Name', email: 'Test Email2'})
+        .then(function(user){
+          User.findOne({email: 'Test Email2' })
+            .then(function(foundUser){
+              expect(foundUser.email).to.equal(user.email);
+              done()
+            }).then(null, done)
+        });
+      });
     //does not create user when the user already exists
-
-    //returns the user that exists
-
-    //can't create user with mssing field
-
-    //can't create user with invalid data types
+      xit('does not create an existing user', function(done) {
+        User.findOrCreate({ name: 'Test Name', email: 'Test Email'})
+        .then(function(user){
+          User.find({email: 'Test Email' })
+            .then(function(foundUser){
+              expect(foundUser.length).to.equal(1);
+              done()
+            }).then(null, done)
+        });
+      });
 
     //can't create user with non unique email
+      it('does not create a dup email', function(done) {
+       var createBad  = function(){
+        newUser2 = new User({
+        name: 'Test Name',
+        email: 'Test Email',
+        });
+         newUser2.save(function(err){
+          if (err) {
+            console.log("ERROR");
+            throw new Error('I FAILED') }
+          });
+          done();
+       }
 
+       expect(createBad).to.throw('I FAILED');
+       done();
+       });
   })
 });
